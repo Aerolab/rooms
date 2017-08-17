@@ -1,0 +1,15 @@
+*, *::before, *::after {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+html, body, #app {
+  height: 100%;
+}
+
+body {
+  font-family: 'Dosis', sans-serif;
+  letter-spacing: 0.2em;
+  margin: 0;
+  padding: 0;
+}

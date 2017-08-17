@@ -1,0 +1,31 @@
+{
+  "name": "Rooms",
+  "version": "0.1.0",
+  "description": "A Simple Meeting Room Display",
+  "private": false,
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "connect-history-api-fallback": "^1.3.0",
+    "express": "^4.15.3",
+    "googleapis": "^20.1.0",
+    "moment": "^2.18.1",
+    "moment-timezone": "^0.5.13",
+    "node-google-calendar": "^1.0.0",
+    "precss": "^2.0.0",
+    "prop-types": "^15.5.10",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1",
+    "react-helmet": "^5.1.3",
+    "react-router-dom": "^4.1.1"
+  },
+  "devDependencies": {
+    "nwb": "0.18.x"
+  },
+  "author": "",
+  "license": "MIT",
+  "repository": ""
+}

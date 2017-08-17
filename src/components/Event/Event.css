@@ -1,0 +1,18 @@
+.Event {
+  padding: 2em;
+  background: color(black alpha(10%));
+
+  .badge {
+    display: inline-block;
+    padding: 0.5em;
+    text-transform: uppercase;
+    font-weight: 700;
+    background-color: color(black alpha(10%))
+  }
+
+  .name {
+    margin-bottom: 0.25em;
+    font-size: 36px;
+  }
+
+}

@@ -1,0 +1,23 @@
+.Main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  flex-grow: 1;
+  position: relative;
+
+  .label {
+    text-transform: uppercase;
+    font-size: 48px;
+    font-weight: 300;
+  }
+  
+  .time {
+    text-transform: uppercase;
+    font-weight: bold;
+    font-size: 164px;
+    letter-spacing: 0.1em;
+    white-space: pre;
+  }
+
+}
