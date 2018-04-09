@@ -22,9 +22,13 @@ export default class Main extends PureComponent {
 
     return (
       <div className="Main">
-        <div>{state}</div>
-        <div className="label">{label}</div>
-        <div className="time">{time}</div>
+        <div className="illustration">
+          <img src={`${state}.svg`}/>
+        </div>
+        <div className="info">
+          <div className="label">{label}</div>
+          <div className="time">{time}</div>
+        </div>
         { children }
       </div>
     )

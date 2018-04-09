@@ -141,11 +141,11 @@ export default class App extends Component {
       }
     }
     if(state=="free"){
-      if(minutesLeft<15){
+      if(minutesLeft<30){
         state='toBusy'
       }
     }else{
-      if(minutesLeft<15){
+      if(minutesLeft<30){
         state='toFree'
       }
     }
@@ -158,12 +158,13 @@ export default class App extends Component {
       eventProps = {}
     } else { // Near event - Shows more detailed info about the state and current/next Event
       mainProps = {
-        label: mainProps.label + (minutesLeft >= 30 ? ' until' : ' for'),
-        time: minutesLeft >= 30 ? moment(timeLeft).format('HH:mm') : ` ${minutesLeft}'`,
+        label: (minutesLeft >= 30 ? 'Ocupada hasta' : 'Se libera en'),
+        time: minutesLeft >= 30 ? moment(timeLeft).format('HH:mm') : `${minutesLeft}'`,
         state: mainProps.label
       }
     }
 
+    //Event data: <Event {...eventProps} />
     return (
       !isLoading ? (
         <div className={cn('App', state)}>
@@ -174,7 +175,6 @@ export default class App extends Component {
           <Main {...mainProps}>
             {isAvailable && <BookNow book={this.book} />}
           </Main>
-          <Event {...eventProps} />
         </div>
       ) : null
     )
