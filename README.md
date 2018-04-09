@@ -42,8 +42,8 @@ Open a browser on **http://localhost:3000/room-slug** (*not literally*, you have
 
 Nodemon executes a file and keeps it updated. If you modified the file, it will automatically be updated by nodemon. To use it, run:
 
-`npm install -g nodemon` to install
-`npm run serve`
+- `npm install -g nodemon` to install
+- `npm run serve`
 
 ## Troubleshooting
 
