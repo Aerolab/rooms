@@ -38,6 +38,13 @@ Start the server with `npm run start`.
 
 Open a browser on **http://localhost:3000/room-slug** (*not literally*, you have to replace room-slug with the proper room key, like *lounge* or *super-room*). You should be able to see the current status of the room and book it.
 
+### Using nodemon
+
+Nodemon executes a file and keeps it updated. If you modified the file, it will automatically be updated by nodemon. To use it, run:
+
+`npm install -g nodemon` to install
+`npm run serve`
+
 ## Troubleshooting
 
 ### Error: Cannot find module 'moment'
