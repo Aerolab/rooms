@@ -1,11 +1,6 @@
-![Meeting Room Display](http://i.imgur.com/jBEWBWr.jpg)
+# Meeting Room Display
 
-This is a side project we built at [Aerolab](https://aerolab.co) to show which meeting rooms are currently available (and for how long), as well as giving you the ability to anonymously book a room for 15' with a single tap. This is all based on Google Calendar in a typical Google Apps for Business package.
-
-The motivation behind this is that most meeting room software is needlessly complicated (and expensive!), so we built exactly what we needed as a Web App, which is then deployed to a bunch of cheap Fire HD 8 tablets (one per room) using a headless web browser. It's simple, it works well to let people know that they shouldn't use a specific meeting room, and it looks kind of cool.
-
-Proof of Concept built using React + Node.JS.
-
+This is a side project we built at Tienda Nube, based on [Aerolab](https://aerolab.co) project.
 
 ## Setup & Config
 
@@ -43,6 +38,15 @@ Start the server with `npm run start`.
 
 Open a browser on **http://localhost:3000/room-slug** (*not literally*, you have to replace room-slug with the proper room key, like *lounge* or *super-room*). You should be able to see the current status of the room and book it.
 
+## Troubleshooting
+
+### Error: Cannot find module 'moment'
+
+Run `npm install -g moment` and then `npm install moment`
+
+### Error: Cannot find module 'googleapis'
+
+Run `npm install`
 
 ## Deploying
 
