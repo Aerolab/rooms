@@ -5,7 +5,8 @@
   "private": false,
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "serve": "nodemon server.js"
   },
   "dependencies": {
     "classnames": "^2.2.5",
@@ -15,6 +16,7 @@
     "moment": "^2.22.0",
     "moment-timezone": "^0.5.13",
     "node-google-calendar": "^1.0.0",
+    "nodemon": "^1.17.3",
     "precss": "^2.0.0",
     "prop-types": "^15.5.10",
     "react": "^15.6.1",
