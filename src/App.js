@@ -105,7 +105,7 @@ export default class App extends Component {
       .then(response => response.json())
       .then(({ name, schedule }) => this.setState({ name, schedule }, this.updateTime))
   }
-  
+
   // TODO: Clean up App's updateTime method
   updateTime() {
     const { schedule } = this.state
@@ -122,9 +122,10 @@ export default class App extends Component {
 
   render() {
     const { name, slug, now, isLoading, isAvailable, currentEvent, nextEvent, nextFreeSlot } = this.state
-    const state = isAvailable ? 'free' : 'busy'
+    let state = isAvailable ? 'free' : 'busy'
 
-    let minutesLeft, timeLeft, mainProps = { label: state }, eventProps = {}
+
+    let minutesLeft, timeLeft, eventProps = {}
 
     // Define what event info is shown and the total time left
     if (isAvailable && nextEvent) {
@@ -139,7 +140,18 @@ export default class App extends Component {
         eventProps = { current: true, event: currentEvent }
       }
     }
+    if(state=="free"){
+      if(minutesLeft<15){
+        state='toBusy'
+      }
+    }else{
+      if(minutesLeft<15){
+        state='toFree'
+      }
+    }
+    let mainProps = { label: state }
 
+    //Crear los nuevos estados si se requieren
     // No/Distant event - Only shows the state of the room
     if (minutesLeft >= 120 || isAvailable && !minutesLeft) {
       mainProps = { time: state }
@@ -147,7 +159,8 @@ export default class App extends Component {
     } else { // Near event - Shows more detailed info about the state and current/next Event
       mainProps = {
         label: mainProps.label + (minutesLeft >= 30 ? ' until' : ' for'),
-        time: minutesLeft >= 30 ? moment(timeLeft).format('HH:mm') : ` ${minutesLeft}'`
+        time: minutesLeft >= 30 ? moment(timeLeft).format('HH:mm') : ` ${minutesLeft}'`,
+        state: mainProps.label
       }
     }
 
