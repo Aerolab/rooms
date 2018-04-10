@@ -9,11 +9,19 @@
   transition: background-color .5s;
 
   &.free {
-    background-color: var(--free);
+    background: var(--free);
   }
 
   &.busy {
-    background-color: var(--busy);
+    background: var(--busy);
+  }
+
+  &.toFree {
+    background: var(--toFree);
+  }
+
+  &.toBusy {
+    background: var(--toBusy);
   }
 
 }

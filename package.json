@@ -1,31 +1,49 @@
 {
-  "name": "Rooms",
-  "version": "0.1.0",
-  "description": "A Simple Meeting Room Display",
-  "private": false,
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
+  "name": "react-tutorials",
+  "version": "0.0.0",
+  "description": "",
+  "main": "webpack.config.js",
   "dependencies": {
-    "classnames": "^2.2.5",
-    "connect-history-api-fallback": "^1.3.0",
-    "express": "^4.15.3",
-    "googleapis": "^20.1.0",
-    "moment": "^2.18.1",
-    "moment-timezone": "^0.5.13",
-    "node-google-calendar": "^1.0.0",
-    "precss": "^2.0.0",
-    "prop-types": "^15.5.10",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
-    "react-helmet": "^5.1.3",
-    "react-router-dom": "^4.1.1"
+    "autoprefixer": "^8.2.0",
+    "axios": "^0.12.0",
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.0",
+    "babel-plugin-add-module-exports": "^0.1.2",
+    "babel-plugin-react-html-attrs": "^2.0.0",
+    "babel-plugin-transform-class-properties": "^6.3.13",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
+    "babel-preset-es2015": "^6.3.13",
+    "babel-preset-react": "^6.3.13",
+    "babel-preset-stage-0": "^6.3.13",
+    "connect-history-api-fallback": "^1.5.0",
+    "cors": "^2.8.4",
+    "css-loader": "^0.28.11",
+    "express": "^4.16.3",
+    "googleapis": "20.1.0",
+    "moment": "^2.22.0",
+    "moment-timezone": "^0.5.14",
+    "nodemon": "^1.17.3",
+    "precss": "^3.1.2",
+    "react": "^0.14.6",
+    "react-dom": "^0.14.6",
+    "react-helmet": "^5.2.0",
+    "react-redux": "^4.4.5",
+    "redux": "^3.5.2",
+    "redux-logger": "^2.6.1",
+    "redux-promise-middleware": "^3.2.0",
+    "redux-thunk": "^2.1.0",
+    "style-loader": "^0.20.3",
+    "webpack": "^1.12.9",
+    "webpack-dev-server": "^1.14.1"
   },
   "devDependencies": {
-    "nwb": "0.18.x"
+    "redux-devtools-extension": "^2.13.2"
+  },
+  "scripts": {
+    "dev": "./node_modules/.bin/webpack-dev-server --content-base src --inline --hot --port 3161",
+    "server":"nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
-  "license": "MIT",
-  "repository": ""
+  "license": "ISC"
 }

@@ -1,0 +1,6 @@
+:root {
+  --free: linear-gradient(to bottom right, #c0ffc3, #00c6a3);
+  --busy: linear-gradient(to bottom right, #c52e2e, #ffb30e);
+  --toFree: linear-gradient(to bottom right, #ffb30e, #ffc70e);
+  --toBusy: linear-gradient(to bottom right, #ff7e47, #c52e2e);
+}
