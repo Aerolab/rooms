@@ -1,6 +1,9 @@
 .Event {
   padding: 2em;
   background: color(black alpha(10%));
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 
   .badge {
     display: inline-block;

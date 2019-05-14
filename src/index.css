@@ -8,8 +8,7 @@ html, body, #app {
 }
 
 body {
-  font-family: 'Dosis', sans-serif;
-  letter-spacing: 0.2em;
+  font-family: Euclid, EuclidCircularA, sans-serif;
   margin: 0;
   padding: 0;
 }

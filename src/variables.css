@@ -1,4 +1,8 @@
 :root {
-  --free: #25C79A;
-  --busy: #FFA000;
+  --highlight: #FF4F00;
+  --background: #1F1D1C;
+  --backgroundLight: #383432;
+  --text: #FFFFFF;
+  --textLight: #D1D1D1;
+  --textDark: #1F1D1C;
 }

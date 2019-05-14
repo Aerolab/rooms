@@ -1,13 +1,15 @@
+# Meeting Room Display
+
 ![Meeting Room Display](http://i.imgur.com/jBEWBWr.jpg)
 
-This is a side project we built at [Aerolab](https://aerolab.co) to show which meeting rooms are currently available (and for how long), as well as giving you the ability to anonymously book a room for 15' with a single tap. This is all based on Google Calendar in a typical Google Apps for Business package.
+This is a side project we built at [Aerolab](https://aerolab.co) to show which meeting rooms are currently available (and for how long), as well as giving you the ability to anonymously book them for 30' with a single tap. This is all based on Google Calendar in a typical Google Apps for Business package.
 
-The motivation behind this is that most meeting room software is needlessly complicated (and expensive!), so we built exactly what we needed as a Web App, which is then deployed to a bunch of cheap Fire HD 8 tablets (one per room) using a headless web browser. It's simple, it works well to let people know that they shouldn't use a specific meeting room, and it looks kind of cool.
-
-Proof of Concept built using React + Node.JS.
+The motivation behind this is that most meeting room software is needlessly complicated (and expensive!), so we built exactly what we needed as a Web App, which is then deployed to a bunch of cheap Fire HD 8 tablets using a headless web browser. It's simple, it works well to let people know that they shouldn't use a specific meeting room, and it looks kind of cool.
 
 
 ## Setup & Config
+
+This is a standard Node.js project, so you just need to run `npm ci` to install the dependencies and `npm run dev` to start development mode with live reload. Run `npm run build` and then `npm start` to run the app in production mode.
 
 This is the most complicated step, as you are going to need to add two JSON files to make things work: A Google Credentials File, and a list of Meeting Rooms (also known as Resources in Google Calendar).
 
@@ -31,24 +33,21 @@ After you've done that, you need to **Create a rooms.json file** in the root of 
 
 ```json
 {
-    "lounge": {"name": "Lounge", "id": "domain_123@resource.calendar.google.com"},
-    "super-room": {"name": "Super Room", "id": "domain_1234@resource.calendar.google.com"}
+    "lounge": {"name": "Lounge", "slug": "lounge", "position": "right", "id": "domain_123@resource.calendar.google.com"},
+    "super-room": {"name": "Super Room", "slug": "super-room", "position": "left", "id": "domain_456@resource.calendar.google.com"},
 }
 ```
 
+The `position` just shows where the room is located relative to the display. The only options are `left` or `right`.
 
 ## Using the app
 
-Start the server with `npm run start`.
-
-Open a browser on **http://localhost:3000/room-slug** (*not literally*, you have to replace room-slug with the proper room key, like *lounge* or *super-room*). You should be able to see the current status of the room and book it.
-
+Open a browser on **http://localhost:3000/room-slug** (not literally, replace room-slug with the proper room key, like *lounge* or *super-room*). You should be able to see the current status of the room and book it.
 
 ## Deploying
 
-We provide a Dockerfile, which you can easily use on [Now](https://zeit.co/now), or any other service you prefer. We are not using any sort of authentication or environment variables as this is a quick internal project, but you're free to add some sort of auth if you want.
-
+We provide a Dockerfile, which you can easily use on [Now](https://zeit.co/now), or any other service you prefer. We are not using any sort of authentication or env variables as this is a quick internal project, but you're free to add some sort of auth if you want.
 
 ## License
 
-MIT.
+MIT, of course.

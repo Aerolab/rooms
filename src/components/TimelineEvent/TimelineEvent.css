@@ -1,0 +1,47 @@
+@import '../../variables.css';
+
+.TimelineEvent {
+  background: var(--backgroundLight);
+  height: 160px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  color: #b4b2b1;
+  padding: 0 80px;
+  position: relative;
+
+  .subtitle {
+    font-family: 'Lora', serif;
+    font-size: 16px;
+  }
+  .title {
+    margin-top: 5px;
+    font-family: 'Euclid', sans-serif;
+    font-size: 30px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 39px;
+    bottom: 0;
+    width: 1px;
+    border-left: 1px solid rgb(93,90,89);
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: 75px;
+    left: 34px;
+    width: 11px;
+    height: 11px;
+    border-radius: 10px;
+    background: rgba(93,90,89);
+  }
+}

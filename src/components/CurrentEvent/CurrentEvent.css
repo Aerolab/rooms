@@ -1,0 +1,91 @@
+@import '../../variables.css';
+
+.CurrentEvent {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  flex-grow: 1;
+  width: 100%;
+  padding: 0 80px;
+
+  &.is-available {
+    padding-top: 190px;
+  }
+
+  .time {
+    font-family: Lora, serif;
+    font-size: 34px;
+    color: var(--textLight);
+  }
+  .title {
+    font-family: Euclid, sans-serif;
+    font-size: 80px;
+    line-height: 1.1;
+    margin: 10px 0 30px 0;
+    display: -webkit-box;
+    overflow: hidden;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+
+    &.small {
+      font-size: 64px;
+    }
+  }
+  .booker {
+    font-family: Lora, serif;
+    font-size: 24px;
+    line-height: 1.4;
+    color: var(--textLight);
+    strong {
+      color: white;
+      font-weight: inherit;
+    }
+  }
+  .actions {
+    text-align: center;
+    margin-top: 50px;
+    transition: all 0.3s ease-out;
+
+    &.is-visible {
+      opacity: 1.0;
+    }
+    &.is-hidden {
+      opacity: 0.0;
+      visibility: hidden;
+    }
+  }
+}
+
+
+.Button {
+  display: block;
+  width: max-content;
+  margin: 0 auto;
+  padding: 23px 65px;
+  background-color: var(--highlight);
+  color: var(--textDark);
+  border: 0;
+  border-radius: 0;
+  font-size: 20px;
+  line-height: 1;
+  font-family: inherit;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  outline: none;
+  cursor: pointer;
+}
+
+.Link {
+  margin-top: 40px;
+  display: inline-block;
+  width: auto;
+  color: var(--highlight);
+  font-size: 20px;
+  padding: 2px 0;
+  line-height: 1.2;
+  border-bottom: 2px solid var(--highlight);
+  cursor: pointer;
+}

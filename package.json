@@ -1,18 +1,26 @@
 {
-  "name": "Rooms",
-  "version": "0.1.0",
-  "description": "A Simple Meeting Room Display",
-  "private": false,
+  "name": "rooms",
+  "version": "1.0.0",
+  "description": "Describe rooms here",
+  "private": true,
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "dev": "NODE_ENV=development nodemon server.js",
+    "start": "NODE_ENV=production node server.js",
+    "build": "nwb build-react-app",
+    "clean": "nwb clean-app",
+    "test": "nwb test-react",
+    "test:coverage": "nwb test-react --coverage",
+    "test:watch": "nwb test-react --server"
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "compression": "^1.7.4",
     "connect-history-api-fallback": "^1.3.0",
-    "express": "^4.15.3",
+    "express": "^4.16.4",
     "googleapis": "^20.1.0",
-    "moment": "^2.18.1",
+    "ical-expander": "^1.1.2",
+    "moment": "^2.24.0",
     "moment-timezone": "^0.5.13",
     "node-google-calendar": "^1.0.0",
     "precss": "^2.0.0",
@@ -20,10 +28,13 @@
     "react": "^15.6.1",
     "react-dom": "^15.6.1",
     "react-helmet": "^5.1.3",
-    "react-router-dom": "^4.1.1"
+    "react-router-dom": "^4.1.1",
+    "request": "^2.88.0",
+    "request-promise-native": "^1.0.5"
   },
   "devDependencies": {
-    "nwb": "0.18.x"
+    "nodemon": "^1.19.0",
+    "nwb": "^0.23.0"
   },
   "author": "",
   "license": "MIT",

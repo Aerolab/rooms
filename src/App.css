@@ -1,19 +1,86 @@
 @import 'variables.css';
 
+@font-face {
+  font-family: "Euclid";
+  font-display: auto;
+  font-weight: 400;
+  src: url("/fonts/EuclidCircularA-Medium.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Lora";
+  font-weight: 400;
+  src: url("/fonts/Lora-Regular.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Lora";
+  font-weight: 400;
+  font-style: italic;
+  src: url("/fonts/Lora-Italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Lora";
+  font-weight: 500;
+  font-style: italic;
+  src: url("/fonts/Lora-BoldItalic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Lora";
+  font-weight: 500;
+  src: url("/fonts/Lora-Bold.woff2") format("woff2");
+}
+
 .App {
   display: flex;
   flex-direction: column;
   width: 100vw;
   height: 100vh;
-  color: white;
-  transition: background-color .5s;
+  background: var(--background);
+  color: var(--text);
+  font-family: "Euclid", sans-serif;
 
-  &.free {
-    background-color: var(--free);
+  &.loading {
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    color: var(--textLight);
+
+    &::after {
+      display: none;
+    }
   }
 
-  &.busy {
-    background-color: var(--busy);
+  /* The arrow */
+  &::after {
+    content: "";
+    background: url("/images/left.svg") no-repeat 50% 50%;
+    background-size: contain;
+    position: absolute;
+    top: calc(50% - 17px);
+    left: 18px;
+    height: 34px;
+    width: 34px;
   }
 
+  &.left {
+    text-align: left;
+  }
+  &.right {
+    text-align: right;
+
+    &::after {
+      content: "";
+      background-image: url("/images/right.svg");
+      left: auto;
+      right: 18px;
+    }
+
+    .TimelineEvent::before {
+      left: auto;
+      right: 39px;
+    }
+    .TimelineEvent::after {
+      left: auto;
+      right: 34px;
+    }
+  }
 }

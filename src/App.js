@@ -1,56 +1,17 @@
 import React, { Component } from 'react'
 import Helmet from 'react-helmet'
-import moment from 'moment'
+import moment from 'moment-timezone'
 import cn from 'classnames'
 import './App.css'
-import Main from './components/Main/Main'
+import {unifySchedule, newFreeSlot} from '../api/shared'
+
+import Header from './components/Header/Header'
+import CurrentEvent from './components/CurrentEvent/CurrentEvent'
 import Event from './components/Event/Event'
-import BookNow from './components/BookNow/BookNow'
+import EventList from './components/EventList/EventList'
+import TimelineEvent from './components/TimelineEvent/TimelineEvent'
 
-// FIXME: #1 This should be here duplicated :(
-const unifySchedule = function (events) {
-  let now = moment()
-  events = events.filter((e) => !e.available)
-  let busySlots = events.slice()
-  let freeSlots = getFreeSlots(events, now)
-
-  let schedule = busySlots.concat(freeSlots).sort((a, b) => a.start - b.start)
-
-  return schedule
-}
-
-// FIXME: #2 This should be here duplicated :(
-const getFreeSlots = function (events, now) {
-  // Add two fake bookings at the start and end of the day to easily get the slots in between all the events
-  events = events.slice().sort((a, b) => a.start - b.start)
-  events.unshift({ start: now.clone().startOf('day'), end: now.clone().startOf('day') })
-  events.push({ start: now.clone().endOf('day'), end: now.clone().endOf('day') })
-
-  let slots = []
-  for (let i = 0; i < events.length; i++) {
-    let current = events[i]
-    let next = events[i + 1] || events[events.length - 1]
-
-    if (current.status !== 'cancelled') {
-      current.end = moment(current.end)
-      let containingEvent = events.filter((e) => current.end.isBetween(e.start, e.end)).sort((a, b) => a.end - b.end).pop() || null
-      if (containingEvent) { current = containingEvent }
-
-      if (next.start - current.end > 0) {
-        slots.push({
-          start: current.end.clone(),
-          end: next.start.clone(),
-          summary: 'Free',
-          organizer: null,
-          available: true,
-          private: false
-        })
-      }
-    }
-  }
-
-  return slots
-}
+moment.locale('es');
 
 export default class App extends Component {
 
@@ -59,111 +20,194 @@ export default class App extends Component {
 
     this.state = {
       name: '',
+      position: 'left',
       slug: props.match.params.room,
       now: moment(),
       schedule: [],
       isLoading: true,
       isAvailable: false,
+      prevEvent: null,
       currentEvent: null,
-      nextEvent: null,
-      nextFreeSlot: null
+      nextEvent: null
     }
   }
 
   componentWillMount() {
     this.fetchSchedule()
+    // Update the calendar every 30 seconds
     this.fetchInterval = setInterval(() => this.fetchSchedule(), 30 * 1000)
-    this.updateInterval = setInterval(() => this.updateTime(), 1 * 1000)
+    // Update the app state every second
+    this.updateInterval = setInterval(() => this.updateState(), 1 * 1000)
+
+    // Check the app for upgrades
+    this.upgradeInterval = setInterval(() => this.checkForUpgrade(), 60 * 1000)
+
+    // Restart the client at midnight
+    this.restartTimeout = setTimeout(() => {
+      window.location.reload()
+    }, moment().endOf('day').valueOf() - Date.now());
+
+    this.checkForUpgrade();
   }
 
   componentWillUnmount() {
-    clearInterval(this.fetchInterval)
-    clearInterval(this.updateInterval)
+    clearInterval(this.fetchInterval);
+    clearInterval(this.updateInterval);
+    clearInterval(this.upgradeInterval);
+    clearTimeout(this.restartTimeout);
   }
 
-  fetchSchedule = () => {
-    fetch(`/api/rooms/${this.state.slug}`)
-      .then(response => response.json())
-      .then(({ name, schedule }) => this.setState({ name, schedule }, this.updateTime))
+  checkForUpgrade = async () => {
+    try {
+      const indexReq = await fetch(`/${this.state.slug}`);
+      if (indexReq.status !== 200) return;
+
+      const html = await indexReq.text();
+
+      if( ! this.prevHTML ) this.prevHTML = html;
+
+      // If there's a new release reload the app
+      if( this.prevHTML !== html ) {
+        window.location.reload();
+      }
+    } catch(e) {
+      console.error(e);
+    }
   }
 
-  book = () => {
-    let { now, schedule } = this.state
-    let freeSlot = schedule.find((s) => now.isBetween(s.start, s.end) && s.available)
+  fetchSchedule = async () => {
+    try {
+      const roomReq = await fetch(`/api/rooms/${this.state.slug}`);
+      if (roomReq.status !== 200) throw new Error('API Unavailable');
 
-    schedule.push({
-      start: now.startOf('minute'),
-      end: moment.min(now.clone().add(15, 'minute'), moment(freeSlot.end)),
-      summary: 'Flash meeting'
-    })
+      const roomData = await roomReq.json();
+      this.setState({
+        ...roomData,
+        schedule: unifySchedule(roomData.schedule),
+        isLoading: false
+      }, this.updateState);
+    } catch(e) {
+      console.error(e);
+    }
+  }
 
-    schedule = unifySchedule(schedule)
+  book = async (eventData) => {
+    let { now, schedule, currentEvent } = this.state
 
-    this.setState({ schedule }, this.updateTime)
+    if (! currentEvent.available) return;
 
-    fetch(`/api/rooms/${this.state.slug}`, { method: 'POST' })
-      .then(response => response.json())
-      .then(({ name, schedule }) => this.setState({ name, schedule }, this.updateTime))
+    // Push a fake flash event into the schedule to update the UI instantly
+    if( ! eventData ) {
+      eventData = {
+        available: false,
+        start: now.startOf('minute').format(),
+        end: moment.min(now.clone().add(15, 'minute').endOf('minute'), moment(currentEvent.end)).format(),
+        summary: 'Flash Meeting',
+        isFlashEvent: true
+      }
+    }
+
+    eventData.available = eventData.available || false;
+    eventData.summary = eventData.available || 'Flash Meeting';
+    eventData.start = moment(eventData.start).format();
+    eventData.end = moment(eventData.end).format();
+    eventData.isFlashEvent = true;
+
+    // Make a bunch of fake events to put in-place. This is because running unifySchedule is very slow
+    const eventIndex = schedule.findIndex((e) => e.id === currentEvent.id);
+    const newSchedule = [
+      ...(schedule.slice(0, eventIndex)), 
+      newFreeSlot({ start: currentEvent.start, end: eventData.start }), 
+      eventData, 
+      newFreeSlot({ start: eventData.end, end: currentEvent.end }), 
+      ...(schedule.slice(eventIndex))
+    ];
+    this.updateState(newSchedule, true);
+
+    // Reschedule the fetchInterval so we don't get an update while creating the event. 
+    // The booking takes a few seconds, so it's prone to race conditions.
+    clearInterval(this.fetchInterval);
+    this.fetchInterval = setInterval(() => this.fetchSchedule(), 30 * 1000);
+    
+    // Do the API request so we get the actual booked event. Should look about the same
+    try {
+      const bookingReq = await fetch(`/api/rooms/${this.state.slug}/${moment(eventData.start).format()}/${moment(eventData.end).format()}`, { method: 'POST' });
+      if (bookingReq.status !== 200) throw new Error('API Unavailable');
+
+      const roomData = await bookingReq.json();
+      this.setState({
+        ...roomData
+      });
+      this.updateState(roomData.schedule);
+    } catch(e) {
+      console.error(e);
+      this.fetchSchedule();
+    }
+  }
+
+  removeBooking = async (event) => {
+    const { now, schedule } = this.state
+    if( ! event.isFlashEvent ) return;
+
+    // Remove the flash event from the schedule to update the UI instantly
+    const newSchedule = [...schedule].filter(e => e.id !== event.id);
+
+    this.updateState(newSchedule);
+
+    try {
+      const roomReq = await fetch(`/api/rooms/${this.state.slug}/${event.id}`, { method: 'DELETE' });
+      if (roomReq.status !== 200) throw new Error('API Unavailable');
+      const roomData = await roomReq.json();
+    } catch(e) {
+      console.error(e);
+      this.fetchSchedule();
+    }
+  }
+
+  toggleNextEvents = () => {
+    const { openNextEvents } = this.state
+    this.setState({ openNextEvents: !openNextEvents })
   }
   
-  // TODO: Clean up App's updateTime method
-  updateTime() {
-    const { schedule } = this.state
-    const now = moment()
-    const currentEvent = schedule.find(slot => now.isBetween(slot.start, slot.end)) || null
-    const nextEvent = schedule.find(slot => !slot.available && now.isBefore(slot.start)) || null
-    const nextFreeSlot = schedule.find(slot => slot.available && now.isBefore(slot.start)) || null
-    // If there's no current event, something's probably wrong or we went into the next day
-    const isAvailable = currentEvent ? currentEvent.available : false
-    const isLoading = currentEvent ? false : true
+  updateState(newSchedule, skipUnify) {
+    const now = moment();
+    const schedule = newSchedule ? skipUnify ? newSchedule : unifySchedule(newSchedule) : this.state.schedule;
 
-    this.setState({ now, isLoading, isAvailable, currentEvent, nextEvent, nextFreeSlot })
+    const currentTime = now.format('HH:mm:ss');
+    const currentEvent = schedule.find((e) => now.isBetween(e.start, e.end));
+    const prevEvent = schedule.filter((e) => e.end <= currentEvent.start && e.id).pop();
+    const nextEvent = schedule.find((e) => e.start == currentEvent.end);
+
+    const isAvailable = currentEvent ? currentEvent.available : true
+
+    this.setState({
+      now,
+      currentTime,
+      currentEvent,
+      prevEvent,
+      nextEvent,
+      isAvailable,
+      schedule
+    })
   }
 
   render() {
-    const { name, slug, now, isLoading, isAvailable, currentEvent, nextEvent, nextFreeSlot } = this.state
-    const state = isAvailable ? 'free' : 'busy'
+    const { name, position, isAvailable, isLoading, currentEvent, prevEvent, nextEvent, currentTime } = this.state
 
-    let minutesLeft, timeLeft, mainProps = { label: state }, eventProps = {}
-
-    // Define what event info is shown and the total time left
-    if (isAvailable && nextEvent) {
-      minutesLeft = Math.ceil(moment.duration(-now.diff(currentEvent.end)).asMinutes())
-      eventProps = { current: false, event: nextEvent }
-      timeLeft = currentEvent.end
-    } else if (!isAvailable) {
-      let endEvent = nextEvent ? nextEvent : (nextFreeSlot ? nextFreeSlot : now.endOf('day'))
-      minutesLeft = Math.ceil(moment.duration(-now.diff(endEvent.start)).asMinutes())
-      timeLeft = nextFreeSlot ? moment(nextFreeSlot.start) : now.endOf('day')
-      if (currentEvent) {
-        eventProps = { current: true, event: currentEvent }
-      }
-    }
-
-    // No/Distant event - Only shows the state of the room
-    if (minutesLeft >= 120 || isAvailable && !minutesLeft) {
-      mainProps = { time: state }
-      eventProps = {}
-    } else { // Near event - Shows more detailed info about the state and current/next Event
-      mainProps = {
-        label: mainProps.label + (minutesLeft >= 30 ? ' until' : ' for'),
-        time: minutesLeft >= 30 ? moment(timeLeft).format('HH:mm') : ` ${minutesLeft}'`
-      }
+    if( isLoading ) {
+      return <div className="App loading">Cargando...</div>
     }
 
     return (
-      !isLoading ? (
-        <div className={cn('App', state)}>
-          <Helmet>
-            <title>{name}</title>
-            <link rel="icon" type="image/x-icon" href={`/${state}.ico`} />
-          </Helmet>
-          <Main {...mainProps}>
-            {isAvailable && <BookNow book={this.book} />}
-          </Main>
-          <Event {...eventProps} />
-        </div>
-      ) : null
+      <div className={cn('App', position)}>
+        <Helmet>
+          <title>{name}</title>
+          <link rel="icon" type="image/x-icon" href={`/${isAvailable ? 'free' : 'busy'}.ico`} />
+        </Helmet>
+        <TimelineEvent event={prevEvent} isPrev />
+        <CurrentEvent event={currentEvent} time={currentTime} prevEvent={prevEvent} nextEvent={nextEvent} onBook={this.book} onRemoveBooking={this.removeBooking} />
+        <TimelineEvent event={nextEvent} isNext />
+      </div>
     )
   }
 }
